@@ -1,0 +1,26 @@
+<style type = 'text/css'>
+video{
+	height:150px;
+}
+.video-div{
+	float:left;
+}
+</style>
+<%= will_paginate(@videos) %>
+<div class = 'row'>
+
+<% @videos.each do |video| %>
+<div class = 'video-div'>
+	<a href = '/request_photo/<%= video.id %>'>
+		<video src = '<%= video.compressed_path %>' autoplay></video>
+	</a>
+</div>
+<% end %>
+</div>
+
+<script type = 'text/javascript'>
+$('video').each(function(){
+	this.playbackRate = 30;
+	this.loop = true
+});
+</script>

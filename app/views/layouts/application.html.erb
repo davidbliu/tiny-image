@@ -2,11 +2,40 @@
 <html>
 <head>
   <title>ImgShare</title>
+  <style type = 'text/css'>
+  body{
+  	padding-top:70px;
+  }
+  h1, h2, h3, h4, h5, h6, p, body, div, span{
+  	font-family: 'Source Sans Pro', sans-serif;
+  }
+#nav-ul{
+    float: left;
+    margin: 0;
+    /* text-align: center; */
+    margin-left: 35%;
+	}
+  </style>
+  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
+  <link rel = 'stylesheet' href = 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'>
+  <script src = '/lib/underscore-min.js'></script>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
 </head>
 <body>
+
+<nav id = 'topnav' class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul id = 'nav-ul' class="nav navbar-nav">
+        <li><a href="/pick_photos">Photos</a></li>
+        <li><a href="/pick_videos">Videos</a></li>
+        <li><a href="/requested">Requested</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
 
 <%= yield %>
 

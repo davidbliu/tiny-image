@@ -1,0 +1,32 @@
+
+<style type = 'text/css'>
+img, video{
+	height:150px;
+}
+.photo-div, .video-div{
+	float:left;
+}
+</style>
+
+
+<div class= 'row'>
+<% @videos.each do |video| %>
+<a href = 'unrequest_photo/<%= video.id %>'>
+	<video src = '<%= video.compressed_path %>' autoplay></video>
+</a>
+<% end %>
+</div>
+
+<div class = 'row'>
+<% @photos.each do |photo| %>
+<a href = 'unrequest_photo/<%= photo.id %>'>
+<img src = '<%= photo.compressed_path %>'></img>
+</a>
+<% end %>
+</div>
+<script type = 'text/javascript'>
+$('video').each(function(){
+	this.playbackRate = 30;
+	this.loop = true
+});
+</script>

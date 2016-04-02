@@ -1,0 +1,19 @@
+<style type = 'text/css'>
+img{
+	height:125px;
+}
+.photo-div{
+	float:left;
+}
+</style>
+<%= will_paginate(@photos) %>
+<div class = 'row'>
+
+<% @photos.each do |photo| %>
+<div class = 'photo-div'>
+	<a href = '/request_photo/<%= photo.id %>'>
+		<img src = '<%= photo.compressed_path %>'></img>
+	</a>
+</div>
+<% end %>
+</div>

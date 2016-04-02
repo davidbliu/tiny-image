@@ -1,13 +1,17 @@
 class Photo < ActiveRecord::Base
 	before_destroy :remove_public_file
 
+	def self.process
+		Photo.where('keepalive < ?', Time.now-15.minutes).destroy_all
+	end
+
+
 	def remove_public_file
 		puts 'not implemented yet'
 	end
 
 	def self.requested
-		Photo.where('id IN (?)',
-				PhotoRequest.all.pluck(:photo_id))
+		Photo.order('created_at desc').where('id IN (?)', PhotoRequest.all.pluck(:photo_id))
 	end
 
 	def self.unrequested

@@ -3,12 +3,17 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   post '/upload_compressed' => 'application#upload_compressed'
-  root 'application#home'
-  get '/pick' => 'application#pick'
+  post '/keepalive' => 'application#keepalive'
+  root 'application#pick_photos'
   get 'request_photo/:id' => 'application#request_photo'
   get 'unrequest_photo/:id' => 'application#unrequest_photo'
   get 'fulfill' => 'application#fulfill'
   get 'empty' => 'application#empty'
+
+  get 'pick_photos' => 'application#pick_photos'
+  get 'pick_videos' => 'application#pick_videos'
+  get 'requested' => 'application#requested'
+  get 'requested_paths' => 'application#requested_paths'
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 
