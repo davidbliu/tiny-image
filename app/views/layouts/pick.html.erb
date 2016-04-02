@@ -1,0 +1,23 @@
+<style type = 'text/css'>
+img{
+	height:125px;
+}
+video{
+	height:150px;
+}
+</style>
+
+<h1>Pick photos</h1>
+<% @videos.each do |video| %>
+	<video src = '<%= video.compressed_path %>' autoplay></video>
+<% end %>
+<% @photos.each do |photo| %>
+	<img src = "<%= photo.compressed_path %>"></img>
+<% end %>
+
+<script type = 'text/javascript'>
+$('video').each(function(){
+	this.playbackRate = 30;
+	this.loop = true
+});
+</script>
