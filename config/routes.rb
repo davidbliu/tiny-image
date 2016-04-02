@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   post '/upload_compressed' => 'application#upload_compressed'
   root 'application#home'
   get '/pick' => 'application#pick'
+  get 'request_photo/:id' => 'application#request_photo'
+  get 'unrequest_photo/:id' => 'application#unrequest_photo'
+  get 'fulfill' => 'application#fulfill'
+  get 'empty' => 'application#empty'
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 

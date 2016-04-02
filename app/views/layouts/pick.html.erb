@@ -1,3 +1,4 @@
+<script src = '/lib/underscore-min.js'></script>
 <style type = 'text/css'>
 img{
 	height:125px;
@@ -6,13 +7,33 @@ video{
 	height:150px;
 }
 </style>
+<h1>Requested photos</h1>
+<p>
+	See any of your photos here? <a href = '/fulfill'>Fulfill these requests</a>
+</p>
+<% @requested.each do |photo| %>
+<% if not photo.is_photo %>
+	<a href = '/unrequest_photo/<%= photo.id %>'>
+		<video id = '<%= photo.id %>-photo' src = '<%= photo.compressed_path %>' autoplay></video>
+	</a>
+<% else %>
+	<a href = '/unrequest_photo/<%= photo.id %>'>
+		<img id = '<%= photo.id %>-photo' src = "<%= photo.compressed_path %>"></img>
+	</a>
+<% end %>
+<% end %>
 
-<h1>Pick photos</h1>
+
+<h1>Click Photos to request them</h1>
 <% @videos.each do |video| %>
-	<video src = '<%= video.compressed_path %>' autoplay></video>
+	<a href = '/request_photo/<%= video.id %>'>
+		<video id = '<%= video.id %>-photo' src = '<%= video.compressed_path %>' autoplay></video>
+	</a>
 <% end %>
 <% @photos.each do |photo| %>
-	<img src = "<%= photo.compressed_path %>"></img>
+	<a href = '/request_photo/<%= photo.id %>'>
+		<img id = '<%= photo.id %>-photo' src = "<%= photo.compressed_path %>"></img>
+	</a>
 <% end %>
 
 <script type = 'text/javascript'>
