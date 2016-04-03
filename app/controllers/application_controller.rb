@@ -30,13 +30,13 @@ class ApplicationController < ActionController::Base
 
   def pick_photos
     Photo.process
-    @photos = Photo.unrequested.where(is_photo: true).paginate(:page=>params[:page],:per_page=>50)
+    @photos = Photo.unrequested.where(is_photo: true).order('created_at desc').paginate(:page=>params[:page],:per_page=>50)
     render 'layouts/pick_photos'
   end
 
   def pick_videos
     Photo.process
-    @videos = Photo.unrequested.where(is_photo: false).paginate(:page=>params[:page],:per_page=>50)
+    @videos = Photo.unrequested.where(is_photo: false).order('created_at desc').paginate(:page=>params[:page],:per_page=>50)
     render 'layouts/pick_videos'
   end
 
@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
   def empty
     Photo.destroy_all
     PhotoRequest.destroy_all
-    redirect_to :pick
+    redirect_to :pick_photos
   end
 
 

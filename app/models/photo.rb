@@ -2,7 +2,8 @@ class Photo < ActiveRecord::Base
 	before_destroy :remove_public_file
 
 	def self.process
-		Photo.where('keepalive < ?', Time.now-15.minutes).destroy_all
+		puts 'nothing here'
+		# Photo.where('keepalive < ?', Time.now-15.minutes).destroy_all
 	end
 
 

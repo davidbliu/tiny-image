@@ -8,15 +8,23 @@ video_extensions = ['.mp4', '.MOV', '.MP4']
 photo_extensions =  ['.jpg', '.png']
 valid_extensions = video_extensions + photo_extensions 
 
-def post_file(hostname, compressed_path, original_path, root, email):
+def post_file(hostname, compressed_path, original_path, root, email, keepalive = False):
 	album = '/'.join(original_path.replace(root, '').split('/')[:-1])
-	requests.post(
-		hostname+'/upload_compressed', 
-		files = {'file': open(compressed_path, 'rb')}, 
-		params = {
-			'email':email,
-			'original_path':original_path,
-			'album': album})
+	if keepalive:
+		requests.post(
+			hostname+'/upload_compressed', 
+			params = {
+				'email':email,
+				'original_path':original_path,
+				'album': album})
+	else:
+		requests.post(
+			hostname+'/upload_compressed', 
+			files = {'file': open(compressed_path, 'rb')}, 
+			params = {
+				'email':email,
+				'original_path':original_path,
+				'album': album})
 
 def is_photo_path(path):
 	if path[-4:] in photo_extensions:
@@ -76,11 +84,5 @@ def compress_and_upload(root, email, hostname):
 		else:
 			# send keepalive to server
 			post_file(hostname, get_compressed_path(original_path, root), original_path, root, email)
-
-if __name__ == '__main__':
-	# root = os.getcwd()
-	# root = sys.argv[1]
-	# compress_and_upload(root)
-	print 'main'
 	
 
