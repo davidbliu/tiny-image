@@ -12,7 +12,7 @@ def get_requested(hostname, email):
 		'email': email
 		})
 	return r.json()
-	
+
 def update_requested(hostname, email):
 		requested = get_requested(hostname, email)
 		req_path = os.path.join(ROOT, 'requested')
@@ -33,12 +33,13 @@ def update_requested(hostname, email):
 if __name__=='__main__':
 	ROOT = sys.argv[1]
 	EMAIL = sys.argv[2]
-	HOSTNAME = 'http://localhost:3000'
-	print 'Syncing your images'
-	i=0
-	while True:
-		sleep(0.5)
-		print i
-		i+=1
-		press.compress_and_upload(ROOT, EMAIL, HOSTNAME)
-		update_requested(HOSTNAME, EMAIL)
+	HOSTNAME = sys.argv[3]
+	press.compress_and_upload(ROOT, EMAIL, HOSTNAME)
+	# print 'Syncing your images'
+	# i=0
+	# while True:
+	# 	sleep(0.5)
+	# 	print i
+	# 	i+=1
+	
+		# update_requested(HOSTNAME, EMAIL)

@@ -30,19 +30,24 @@ class ApplicationController < ActionController::Base
 
   def pick_photos
     Photo.process
-    @photos = Photo.unrequested.where(is_photo: true).order('created_at desc').paginate(:page=>params[:page],:per_page=>50)
+    @photos = Photo.all.where(is_photo: true).order('created_at desc')
+      .paginate(:page=>params[:page],:per_page=>30)
+    @selected_ids = Photo.selected_ids
     render 'layouts/pick_photos'
   end
 
   def pick_videos
     Photo.process
-    @videos = Photo.unrequested.where(is_photo: false).order('created_at desc').paginate(:page=>params[:page],:per_page=>50)
+    @selected_ids = Photo.selected_ids
+    @videos = Photo.all.where(is_photo: false).order('created_at desc')
+    .paginate(:page=>params[:page],:per_page=>30)
     render 'layouts/pick_videos'
   end
 
   def requested
     Photo.process
     @requested = Photo.requested
+    @emails = Photo.all.pluck(:email).uniq
     @photos = Photo.requested.where(is_photo: true)
     @videos = Photo.requested.where(is_photo: false)
     render 'layouts/requested'
@@ -61,9 +66,14 @@ class ApplicationController < ActionController::Base
   end
 
   def request_photo
-    PhotoRequest.where(
+    r = PhotoRequest.where(
       photo_id: params[:id],
-      requester: myEmail).first_or_create!
+      requester: myEmail)
+    if r.length > 0
+      r.destroy_all
+    else
+      r.first_or_create!
+    end
     redirect_to :back
   end
 

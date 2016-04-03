@@ -1,19 +1,33 @@
 <style type = 'text/css'>
 img{
-	height:125px;
+	height:200px;
+	/*margin:1px;*/
 }
 .photo-div{
 	float:left;
+	position:relative;
+}
+.selected{
+	outline:5px solid green; 
+	opacity:0.5;
+	z-index:3000;
 }
 </style>
-<%= will_paginate(@photos) %>
+<% if @photos.length == 0 %>
+<h1 class = 'centered'>No tiny pix, check again soon</h1>
+<% end %>
+<%= will_paginate @photos, renderer: BootstrapPagination::Rails %>
 <div class = 'row'>
-
 <% @photos.each do |photo| %>
+<% if @selected_ids.include?(photo.id) %>
+<div class = 'photo-div selected'>
+<% else %>
 <div class = 'photo-div'>
+<% end %>
 	<a href = '/request_photo/<%= photo.id %>'>
 		<img src = '<%= photo.compressed_path %>'></img>
 	</a>
 </div>
 <% end %>
+</div>
 </div>

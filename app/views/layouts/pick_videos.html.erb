@@ -1,16 +1,28 @@
 <style type = 'text/css'>
 video{
-	height:150px;
+	height:200px;
 }
 .video-div{
 	float:left;
 }
+.selected{
+	outline:5px solid green; 
+	opacity:0.5;
+}
 </style>
-<%= will_paginate(@videos) %>
+<% if @videos.length == 0 %>
+<h1 class = 'centered'>No tiny pix, check again soon</h1>
+<% end %>
+
+<%= will_paginate @videos, renderer: BootstrapPagination::Rails %>
 <div class = 'row'>
 
 <% @videos.each do |video| %>
+<% if @selected_ids.include?(video.id) %>
+<div class = 'video-div selected'>
+<% else %>
 <div class = 'video-div'>
+<% end %>
 	<a href = '/request_photo/<%= video.id %>'>
 		<video src = '<%= video.compressed_path %>' autoplay></video>
 	</a>

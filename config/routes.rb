@@ -14,6 +14,8 @@ Rails.application.routes.draw do
   get 'pick_videos' => 'application#pick_videos'
   get 'requested' => 'application#requested'
   get 'requested_paths' => 'application#requested_paths'
+
+  get 'table' => 'requests#table'
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 

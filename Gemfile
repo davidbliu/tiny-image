@@ -17,6 +17,7 @@ gem 'coffee-rails', '~> 4.1.0'
 
 gem 'carrierwave'
 gem 'will_paginate'
+gem 'will_paginate-bootstrap'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'

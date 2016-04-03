@@ -1,0 +1,29 @@
+<style type = 'text/css'>
+.preview-img{
+	height:100px;
+}
+</style>
+<table class = 'table table-hover table-bordered'>
+	<% @requested.each do |photo| %>
+	<tr>
+		<td>
+			<% if photo.is_photo %>
+			<img src = '<%= photo.compressed_path %>' class = 'preview-img'>
+			<% else %>
+			<video src = '<%= photo.compressed_path %>' class = 'preview-img'></video>
+			<% end %>
+		</td>
+		<td><%= photo.album %></td>
+		<td><%= photo.compressed_path %></td>
+		<td><%= photo.original_path %></td>
+		<td><%= photo.email %></td>
+	</tr>
+	<% end %>
+</table>
+
+<script type = 'text/javascript'>
+$('video').each(function(){
+	this.playbackRate = 30;
+	this.loop = true
+});
+</script>

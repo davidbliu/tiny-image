@@ -1,13 +1,27 @@
 
 <style type = 'text/css'>
 img, video{
-	height:150px;
+	height:200px;
 }
 .photo-div, .video-div{
 	float:left;
 }
+#email-select{
+	width:300px;
+	margin-bottom:15px;
+}
 </style>
 
+<div class = 'row'>
+<select class = 'form-control' id = 'email-select'>
+<option>All Uploaders</option>
+<% @emails.each do |email| %>
+<option class = 'email-opt'>
+	<%= email %>
+</option>
+<% end %>
+</select>
+</div>
 
 <div class= 'row'>
 <% @videos.each do |video| %>

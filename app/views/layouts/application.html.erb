@@ -9,12 +9,29 @@
   h1, h2, h3, h4, h5, h6, p, body, div, span{
   	font-family: 'Source Sans Pro', sans-serif;
   }
+  #topnav{
+    z-index:5000;
+  }
 #nav-ul{
     float: left;
     margin: 0;
     /* text-align: center; */
     margin-left: 35%;
 	}
+  #main-content-div{
+    margin-left:10px;
+    margin-right:10px;
+    position:block;
+  }
+
+
+.navbar-default .navbar-nav>li>a {
+    color:white !important;
+  }
+#topnav{
+    background-color:rgba(0,10,128, 0.70);
+    border-color: white
+  }
   </style>
   <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
   <link rel = 'stylesheet' href = 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'>
@@ -37,7 +54,8 @@
   </div><!-- /.container-fluid -->
 </nav>
 
+<div id = 'main-content-div'>
 <%= yield %>
-
+</div>
 </body>
 </html>

@@ -8,23 +8,15 @@ video_extensions = ['.mp4', '.MOV', '.MP4']
 photo_extensions =  ['.jpg', '.png']
 valid_extensions = video_extensions + photo_extensions 
 
-def post_file(hostname, compressed_path, original_path, root, email, keepalive = False):
+def post_file(hostname, compressed_path, original_path, root, email):
 	album = '/'.join(original_path.replace(root, '').split('/')[:-1])
-	if keepalive:
-		requests.post(
-			hostname+'/upload_compressed', 
-			params = {
-				'email':email,
-				'original_path':original_path,
-				'album': album})
-	else:
-		requests.post(
-			hostname+'/upload_compressed', 
-			files = {'file': open(compressed_path, 'rb')}, 
-			params = {
-				'email':email,
-				'original_path':original_path,
-				'album': album})
+	requests.post(
+		hostname+'/upload_compressed', 
+		files = {'file': open(compressed_path, 'rb')}, 
+		params = {
+			'email':email,
+			'original_path':original_path,
+			'album': album})
 
 def is_photo_path(path):
 	if path[-4:] in photo_extensions:
@@ -50,11 +42,11 @@ def get_compressed_path(original_path, root):
 		return os.path.join(COMP, original_path.split('/')[-1][:-4]+'_comp.png')
 def compress_video(original_path, root):
 	compressed_path = get_compressed_path(original_path, root)
-	os.system('ffmpeg -v 0 -n -i '+original_path+' -vf scale=100:-1 -r 3 -an '+compressed_path)
+	os.system('ffmpeg -v 0 -n -i '+original_path+' -vf scale=50:-1 -r 3 -an '+compressed_path)
 	return compressed_path
 def compress_photo(original_path, root):
 	compressed_path = get_compressed_path(original_path, root)
-	os.system('ffmpeg -v 0 -n -i '+original_path+' -vf scale=300:-1 '+compressed_path)
+	os.system('ffmpeg -v 0 -n -i '+original_path+' -vf scale=200:-1 '+compressed_path)
 	return compressed_path
 
 def compress_and_upload(root, email, hostname):
@@ -72,6 +64,7 @@ def compress_and_upload(root, email, hostname):
 	i=1
 	for original_path in file_paths:
 		i+=1
+		print str(i) + ' of '+str(len(file_paths))
 		if needs_compression(original_path, root):
 			print 'compressing file '+str(i)+' of '+str(len(file_paths))+' | '+original_path
 			if is_photo_path(original_path):

@@ -23,4 +23,8 @@ class Photo < ActiveRecord::Base
 				PhotoRequest.all.pluck(:photo_id))
 		end
 	end
+
+	def self.selected_ids
+		PhotoRequest.all.pluck(:photo_id)
+	end
 end
