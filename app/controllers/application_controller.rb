@@ -3,6 +3,23 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   # protect_from_forgery with: :exception
   include ApplicationHelper 
+
+  def upload_photo
+    require 'fileutils'
+    tmp = params[:file].tempfile
+    file = File.join("public", "hashed/"+params[:file].original_filename)
+    compressed_path = '/hashed/'+params[:file].original_filename
+    p = Photo.where(
+      compressed_path: compressed_path,
+      hash: params[:hash]).first_or_create!
+    p.is_photo = compressed_path.include?('.png')
+    p.email = params[:email]
+    p.album = params[:album]
+    p.keepalive = Time.now
+    p.save!
+    FileUtils.cp tmp.path, file
+    render nothing: true, status: 200
+  end
   def upload_compressed
   	require 'fileutils'
   	tmp = params[:file].tempfile

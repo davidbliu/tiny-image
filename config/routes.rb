@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
-
+  post 'upload_photo' => 'application#upload_photo'
   post '/upload_compressed' => 'application#upload_compressed'
   post '/keepalive' => 'application#keepalive'
   root 'application#pick_photos'

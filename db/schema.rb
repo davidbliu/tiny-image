@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160402184151) do
+ActiveRecord::Schema.define(version: 20160404062754) do
 
   create_table "photo_requests", force: :cascade do |t|
     t.string   "requester"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20160402184151) do
     t.datetime "updated_at",      null: false
     t.datetime "keepalive"
     t.string   "album"
+    t.string   "hash"
   end
 
 end

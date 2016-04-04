@@ -4,7 +4,7 @@ from os import listdir
 from os.path import isfile, join
 import requests
 
-video_extensions = ['.mp4', '.MOV', '.MP4']
+video_extensions = ['.mp4', '.MOV', '.MP4', '.mov']
 photo_extensions =  ['.jpg', '.png', '.JPG', '.PNG']
 valid_extensions = video_extensions + photo_extensions 
 
