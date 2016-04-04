@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20160404062754) do
     t.datetime "updated_at",      null: false
     t.datetime "keepalive"
     t.string   "album"
-    t.string   "hash"
+    t.string   "phash"
   end
 
 end

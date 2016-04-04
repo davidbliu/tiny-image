@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
     compressed_path = '/hashed/'+params[:file].original_filename
     p = Photo.where(
       compressed_path: compressed_path,
-      hash: params[:hash]).first_or_create!
+      phash: params[:hash]).first_or_create!
     p.is_photo = compressed_path.include?('.png')
     p.email = params[:email]
     p.album = params[:album]
@@ -46,27 +46,33 @@ class ApplicationController < ActionController::Base
   end
 
   def pick_photos
-    Photo.process
-    @photos = Photo.all.where(is_photo: true).order('created_at desc')
-      .paginate(:page=>params[:page],:per_page=>100)
+    @album = params[:album]
+    @albums = Photo.albums
+    @photos = Photo.order(is_photo: :asc, created_at: :desc)
+    if @album
+      @photos = @photos.where(album: @album)
+    end
+    @photos = @photos.paginate(:page=>params[:page],:per_page=>100)
     @selected_ids = Photo.selected_ids
     render 'layouts/pick_photos'
   end
 
   def pick_videos
-    Photo.process
     @selected_ids = Photo.selected_ids
-    @videos = Photo.all.where(is_photo: false).order('created_at desc')
+    @photos = Photo.all.where(is_photo: false).order('created_at desc')
     .paginate(:page=>params[:page],:per_page=>25)
-    render 'layouts/pick_videos'
+    render 'layouts/pick_photos'
   end
 
   def requested
-    Photo.process
+    @album = params[:album]
+    @albums = Photo.albums
     @requested = Photo.requested
-    @emails = Photo.all.pluck(:email).uniq
-    @photos = Photo.requested.where(is_photo: true)
-    @videos = Photo.requested.where(is_photo: false)
+    if params[:album]
+      @requested = @requested.where(album: params[:album])
+    end
+    @photos = @requested.where(is_photo: true)
+    @videos = @requested.requested.where(is_photo: false)
     render 'layouts/requested'
   end
 
@@ -108,9 +114,16 @@ def unrequest_photo
   end
 
   def empty
-    Photo.destroy_all
-    PhotoRequest.destroy_all
-    redirect_to :pick_photos
+    if params[:album]
+      w = Photo.where(album: params[:album])
+      ids = w.pluck(:id)
+      w.destroy_all
+      PhotoRequest.where('photo_id in (?)', ids).destroy_all
+    else
+      Photo.destroy_all
+      PhotoRequest.destroy_all
+    end
+    redirect_to :pick
   end
 
 

@@ -1,5 +1,5 @@
 class AddHashToPhoto < ActiveRecord::Migration
   def change
-    add_column :photos, :hash, :string
+    add_column :photos, :phash, :string
   end
 end

@@ -17,9 +17,8 @@ is_video_path = lambda x: x[-4:] in video_extensions
 is_photo_or_video_path = lambda x: is_video_path(x) or is_photo_path(x)
 is_comp_path = lambda x: '/'+COMP in x
 
-
 def get_video_hash(video_path):
-	os.system('ffmpeg -v 0 -ss 0 -i '+video_path+' -s 320x240 -frames:v 1 -y output.png')
+	os.system('ffmpeg -v 0 -ss 0 -i "'+video_path+'" -s 320x240 -frames:v 1 -y output.png')
 	hash = imagehash.phash(Image.open('output.png'))
 	os.system('rm output.png')
 	return hash
@@ -27,13 +26,13 @@ def get_video_hash(video_path):
 def compress_photo(path, outdir):
 	hash = imagehash.phash(Image.open(path))
 	compressed_path = os.path.join(outdir, str(hash)+'.png')
-	os.system('ffmpeg -v 0 -n -i '+path+' -vf scale=200:-1 '+compressed_path)
+	os.system('ffmpeg -v 0 -n -i "'+path+'" -vf scale=200:-1 '+compressed_path)
 	return hash
 
 def compress_video(path, outdir):
 	hash = get_video_hash(path)
 	compressed_path = os.path.join(outdir, str(hash)+'.webm')
-	os.system('ffmpeg -v 0 -n -i '+path+' -vf scale=130:-1 -r 3 -an '+compressed_path)
+	os.system('ffmpeg -v 0 -n -i "'+path+'" -vf scale=130:-1 -r 3 -an '+compressed_path)
 	return hash
 
 def compress_directory(root, outdir):
@@ -54,18 +53,20 @@ def compress_directory(root, outdir):
 
 def send_to_server(path, hash, outdir):
 	album = path.replace(path.split('/')[-1], '')
-	suffix = '.png' if is_photo_path(path) else '.mp4'
+	suffix = '.png' if is_photo_path(path) else '.webm'
 	compressed_path = os.path.join(outdir, str(hash)+suffix)
-	print compressed_path
 	requests.post(HOSTNAME+'/upload_photo',
 		files = {'file': open(compressed_path, 'rb')},
-		params = {'email': 'default', 'album': album, 'hash': hash, 'filename': str(hash)+suffix})
+		params = {'email': 'default', 'album': album, 'hash': hash})
 
 HOSTNAME = 'http://localhost:3000'
 if __name__=='__main__':
 	ROOT = sys.argv[1]
-	OUTDIR = os.path.join(ROOT, COMP)
-	os.system('rm -rf '+OUTDIR)
+	try:
+		OUTDIR = sys.argv[2]
+	except:
+		OUTDIR = os.path.join(ROOT, COMP)
+		os.system('rm -rf '+OUTDIR)
 	os.system('mkdir '+OUTDIR)
 	print '1. re-creating '+OUTDIR
 	print '2. compressing files into '+OUTDIR

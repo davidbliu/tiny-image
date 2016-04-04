@@ -1,30 +1,59 @@
 <style type = 'text/css'>
+body{
+	margin-left:20px;
+	margin-right:20px;
+}
 img{
 	height:200px;
-	/*margin:1px;*/
+}
+video{
+	height: 200px;
 }
 .photo-div{
 	float:left;
 	cursor:pointer;
+	height:200px;
 }
 .selected{
 	outline:5px solid green; 
 	opacity:0.5;
 	z-index:3000;
 }
+#photo-container{
+	margin-top:10px;
+}
 </style>
+<% if @albums.length > 0 %>
+<select id = 'album-select' class = 'form-control'>
+	<option>All Albums</option>
+	<% @albums.each do |album| %>
+		<% if @album and @album == album %>
+			<option selected><%= album %></option>
+		<% else %>
+			<option><%= album %></option>
+		<% end %>
+	<% end %>
+</select>
+<% end %>
+
 <% if @photos.length == 0 %>
-<h1 class = 'centered'>No tiny pix, check again soon</h1>
+<h1 class = 'centered'>No results to show</h1>
 <% end %>
 <%= will_paginate @photos, renderer: BootstrapPagination::Rails %>
-<div class = 'row'>
+
+<div class = 'row' id = 'photo-container'>
 <% @photos.each do |photo| %>
 <% if @selected_ids.include?(photo.id) %>
 <div class = 'photo-div selected' data-id = '<%= photo.id %>'>
 <% else %>
 <div class = 'photo-div' data-id = '<%= photo.id %>'>
 <% end %>
-	<img class = 'photo-img' src = '<%= photo.compressed_path %>'></img>
+	<% if photo.is_photo %>
+		<img class = 'photo-img' src = '<%= photo.compressed_path %>'></img>
+	<% else %>
+		<video src = '<%= photo.compressed_path %>' autoplay></video>
+	<% end %>
+
 </div>
 <% end %>
 </div>
@@ -32,11 +61,29 @@ img{
 
 
 <script type = 'text/javascript'>
+var albums = <%= raw(@albums) %>;
+
+$('#album-select').change(function(){
+	selected = $("#album-select option:selected").text();
+	if(selected == 'All Albums'){
+		<% if @video %>
+			window.location = '/pick?video=true';
+		<% else %>
+			window.location = '/pick';
+		<% end %>
+	}
+	else{
+		<% if @video %>
+		window.location = '/pick?video=true&album='+encodeURIComponent(selected);
+		<% else %>
+		window.location = '/pick?album='+encodeURIComponent(selected);
+		<% end %>
+	}
+});
 $('.photo-div').click(function(){
 	console.log($(this).attr('data-id'));
 	var that = this;
 	$.ajax({
-		
 		url:'/request_photo/'+$(this).attr('data-id'),
 		type:'post',
 		success:function(data){
@@ -45,4 +92,10 @@ $('.photo-div').click(function(){
 		}
 	});
 })
+
+$('video').each(function(){
+	this.playbackRate = 15;
+	this.loop = true
+});
+
 </script>

@@ -6,6 +6,9 @@ class Photo < ActiveRecord::Base
 		# Photo.where('keepalive < ?', Time.now-15.minutes).destroy_all
 	end
 
+	def self.albums
+		Photo.all.pluck(:album).uniq
+	end
 
 	def remove_public_file
 		puts 'not implemented yet'

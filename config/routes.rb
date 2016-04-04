@@ -10,12 +10,13 @@ Rails.application.routes.draw do
   get 'fulfill' => 'application#fulfill'
   get 'empty' => 'application#empty'
 
-  get 'pick_photos' => 'application#pick_photos'
-  get 'pick_videos' => 'application#pick_videos'
+  get 'pick' => 'application#pick_photos'
+  # get 'pick_videos' => 'application#pick_videos'
   get 'requested' => 'application#requested'
   get 'requested_paths' => 'application#requested_paths'
 
   get 'table' => 'requests#table'
+  get 'hashes' => 'requests#hashes'
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 
