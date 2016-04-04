@@ -5,7 +5,7 @@ from os.path import isfile, join
 import requests
 
 video_extensions = ['.mp4', '.MOV', '.MP4']
-photo_extensions =  ['.jpg', '.png']
+photo_extensions =  ['.jpg', '.png', '.JPG', '.PNG']
 valid_extensions = video_extensions + photo_extensions 
 
 def post_file(hostname, compressed_path, original_path, root, email):

@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   post '/upload_compressed' => 'application#upload_compressed'
   post '/keepalive' => 'application#keepalive'
   root 'application#pick_photos'
-  get 'request_photo/:id' => 'application#request_photo'
+  post 'request_photo/:id' => 'application#request_photo'
   get 'unrequest_photo/:id' => 'application#unrequest_photo'
   get 'fulfill' => 'application#fulfill'
   get 'empty' => 'application#empty'
