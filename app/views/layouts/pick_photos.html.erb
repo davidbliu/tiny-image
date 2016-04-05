@@ -8,6 +8,9 @@
 #photo-container{
 	margin-top:10px;
 }
+#modal-footer{
+	display:none;
+}
 
 </style>
 <% if @albums.length > 0 %>
@@ -37,9 +40,9 @@
 <div class = 'row' id = 'photo-container'>
 <% @photos.each do |photo| %>
 <% if @selected_ids.include?(photo.id) %>
-<div class = 'photo-div selected' id = '<%= photo.id %>-photo-div' data-redirect = '<%= photo.compressed_path %>' data-type = '<%= photo.is_photo %>'>
+<div class = 'photo-div selected' id = '<%= photo.id %>-photo-div' data-redirect = '<%= photo.compressed_path %>' data-type = '<%= photo.is_photo %>' data-id = '<%= photo.id %>'>
 <% else %>
-<div class = 'photo-div' id = '<%= photo.id %>-photo-div' data-redirect = '<%= photo.compressed_path %>' data-type = '<%= photo.is_photo %>'>
+<div class = 'photo-div' id = '<%= photo.id %>-photo-div' data-redirect = '<%= photo.compressed_path %>' data-type = '<%= photo.is_photo %>' data-id = '<%= photo.id %>'>
 <% end %>
 	<% if photo.is_photo %>
 		<img class = 'photo-img' src = '<%= photo.compressed_path %>'></img>
@@ -63,9 +66,24 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Get a closer view</h4>
+        <h4 class="modal-title">
+        	<a href = '#' id = 'modal-title-link'></a>
+        </h4>
       </div>
       <div class="modal-body" id = 'modal-body'>
+      	
+      </div>
+      <div class = 'modal-footer' id = 'modal-footer'>
+      	<div id = 'request-form'>
+      		<p class = 'text smalltext'>Leave blank to request full video</p>
+      		<div>
+      			Start: <input id = 'start-time-input' class = 'time-input' type = 'text' placeholder = 'min:sec'>
+      			End: <input id = 'end-time-input' type = 'text' class = 'time-input' placeholder = 'min:sec'>
+      			<div class = 'btn btn-success'>Request</div>
+      		</div>
+      	</div>
+      		
+
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -107,12 +125,19 @@ $('.photo-div').click(function(){
 		$(vid).attr('id', 'modal-photo');
 		$('#modal-body').html(vid);
 		$('#show-modal').modal('show');
+		$('#modal-title-link').attr('href', src);
+		$('#modal-title-link').text(src);
+		$('#modal-footer').show();
+		$('#cut-link').attr('href', '/cut_video?id='+$(this).attr('data-id'));
 	}else{
 		src = $(this).attr('data-redirect')
 		var photo = $('<img src="'+src+'"></img>');
+		$('#modal-title-link').attr('href', src);
+		$('#modal-title-link').text(src);
 		$(photo).attr('id', 'modal-photo');
 		$('#modal-body').html(photo);
 		$('#show-modal').modal('show');
+		$('#modal-footer').hide();
 	}
 });
 $('.delete-btn').click(function(e){

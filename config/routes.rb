@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   root 'application#pick_photos'
   post 'request_photo/:id' => 'application#request_photo'
   post 'delete_photo/:id' => 'application#delete_photo'
+  get 'cut_video' => 'application#cut_video'
   get 'fulfill' => 'application#fulfill'
   get 'empty' => 'application#empty'
 

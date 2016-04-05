@@ -19,29 +19,19 @@ is_video_path = lambda x: x[-4:] in video_extensions
 is_photo_or_video_path = lambda x: is_video_path(x) or is_photo_path(x)
 is_comp_path = lambda x: '/'+COMP in x
 
-def needs_compressing(path, mappings):
-	if path in mappings.keys():
-		return False
-	return True
+needs_compressing = lambda path, mappings: path not in mappings.keys()
 
-def write_mappings(mappings, outdir):
-	with open(os.path.join(outdir, MAPFILE), 'wb') as mapfile:
-		pickle.dump(mappings, mapfile)
+def write_hash_log(path, hash):
+	with open(config.HASHLOG, 'a') as hashlog:
+		hashlog.write(path+':'+hash+'\n')
 
-def load_mappings(outdir):
-	h = {}
-	if os.path.isfile(os.path.join(outdir, MAPFILE)):
-		with open(os.path.join(outdir, MAPFILE), 'rb') as mapfile:
-			h = pickle.load(mapfile)
-	for key in h.keys():
-		if is_photo_path(key):
-			path = str(h[key]) + '.png'
-		else:
-			path = str(h[key]) + '.webm'
-		path = os.path.join(outdir, path)
-		if not os.path.isfile(os.path.join(outdir, path)):
-			h.pop(key, None)
-	return h
+def load_mappings():
+	mappings = {}
+	with open(config.HASHLOG, 'rb') as hashlog:
+		for line in hashlog:
+			path, hash = [str(x).strip() for x in line.split(':')]
+			mappings[path] = hash
+	return mappings
 
 def get_video_hash(video_path):
 	os.system('ffmpeg -v 0 -ss 0 -i "'+video_path+'" -s 320x240 -frames:v 1 -y output.png')
@@ -66,17 +56,18 @@ def compress_video(path, outdir):
 	return hash
 
 def compress_directory(root, outdir, skip = True):
-	mappings = load_mappings(outdir)
+	mappings = load_mappings()
 	original_paths = []
 	for path, subdirs, files in os.walk(root):
 			for name in files:
 				original_path = os.path.join(path, name)
 				if is_photo_or_video_path(original_path) and not is_comp_path(original_path):
 					original_paths.append(original_path)
+	print 'found '+str(len(original_paths))+' files to compress'
 	for i in range(len(original_paths)):
 		path = original_paths[i]
 		if needs_compressing(path, mappings) or not skip:
-			print 'compressing '+str(i)+' of '+str(len(original_paths))+ ' | '+path.split('/')[-1]
+			print 'compressing '+str(i)+' of '+str(len(original_paths))+ ' | '+path
 			if is_photo_path(path):
 				h = compress_photo(path, outdir)
 			else:
@@ -84,10 +75,11 @@ def compress_directory(root, outdir, skip = True):
 			print '\tsending to server'
 			r = send_to_server(path, h, outdir)
 			print '\tresponse: '+str(r)
-			mappings[path] = str(h)
-			write_mappings(mappings, outdir)
+			write_hash_log(path, h)
 		else:
-			print 'skipping | '+path.split('/')[-1]
+			print 'skipping | '+str(i)+' of '+str(len(original_paths))+ ' | '+path
+			r = send_to_server(path, mappings[path], outdir)
+			print '\tresponse: '+str(r)
 
 def send_to_server(path, hash, outdir):
 	album = path.replace(path.split('/')[-1], '')

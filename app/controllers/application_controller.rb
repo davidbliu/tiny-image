@@ -6,9 +6,11 @@ class ApplicationController < ActionController::Base
 
   def upload_photo
     require 'fileutils'
-    tmp = params[:file].tempfile
-    file = File.join("public", "hashed/"+params[:file].original_filename)
+    # tmp = params[:file].tempfile
+    
     compressed_path = '/hashed/'+params[:file].original_filename
+    path = File.join("public",compressed_path)
+    File.open(path, "wb") { |f| f.write(params[:file].read) }
     p = Photo.where(
       compressed_path: compressed_path,
       phash: params[:hash]).first_or_create!
@@ -17,7 +19,7 @@ class ApplicationController < ActionController::Base
     p.album = params[:album]
     p.keepalive = Time.now
     p.save!
-    FileUtils.cp tmp.path, file
+    # FileUtils.cp tmp.path, file
     render nothing: true, status: 200
   end
 
@@ -85,6 +87,11 @@ class ApplicationController < ActionController::Base
     Photo.find(params[:id]).destroy
     render nothing: true, status: 200
   end
+
+  def cut_video
+    @video = Photo.find(params[:id])
+  end
+
 
 
   def empty
