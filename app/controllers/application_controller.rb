@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
     
     compressed_path = '/hashed/'+params[:file].original_filename
     path = File.join("public",compressed_path)
+    File.delete(path) if File.exist?(path)
     File.open(path, "wb") { |f| f.write(params[:file].read) }
     p = Photo.where(
       compressed_path: compressed_path,
