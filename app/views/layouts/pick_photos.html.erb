@@ -1,27 +1,14 @@
 <style type = 'text/css'>
-body{
-	margin-left:20px;
-	margin-right:20px;
-}
-img{
-	height:200px;
-}
-video{
-	height: 200px;
-}
-.photo-div{
-	float:left;
-	cursor:pointer;
-	height:200px;
-}
+
 .selected{
 	outline:5px solid green; 
 	opacity:0.5;
-	z-index:3000;
+	z-index:300;
 }
 #photo-container{
 	margin-top:10px;
 }
+
 </style>
 <% if @albums.length > 0 %>
 <select id = 'album-select' class = 'form-control'>
@@ -39,29 +26,53 @@ video{
 <% if @photos.length == 0 %>
 <h1 class = 'centered'>No results to show</h1>
 <% end %>
+
+<h3><%= @num_files %> Files</h3>
+
 <%= will_paginate @photos, renderer: BootstrapPagination::Rails %>
 
 <div class = 'row' id = 'photo-container'>
 <% @photos.each do |photo| %>
 <% if @selected_ids.include?(photo.id) %>
-<div class = 'photo-div selected' data-id = '<%= photo.id %>'>
+<div class = 'photo-div selected' id = '<%= photo.id %>-photo-div' data-redirect = '<%= photo.compressed_path %>' data-type = '<%= photo.is_photo %>'>
 <% else %>
-<div class = 'photo-div' data-id = '<%= photo.id %>'>
+<div class = 'photo-div' id = '<%= photo.id %>-photo-div' data-redirect = '<%= photo.compressed_path %>' data-type = '<%= photo.is_photo %>'>
 <% end %>
 	<% if photo.is_photo %>
 		<img class = 'photo-img' src = '<%= photo.compressed_path %>'></img>
 	<% else %>
 		<video src = '<%= photo.compressed_path %>' autoplay></video>
 	<% end %>
-
+	<div class = 'photo-btns'>
+		<div class = 'btn btn-default request-btn' data-id = '<%= photo.id %>'>Request</div>
+	</div>
 </div>
 <% end %>
 </div>
 </div>
 
 
+<div class="modal fade" tabindex="-1" role="dialog" id = 'show-modal'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Get a closer view</h4>
+      </div>
+      <div class="modal-body" id = 'modal-body'>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <script type = 'text/javascript'>
 var albums = <%= raw(@albums) %>;
+
+$('.photo-div').hover(function(){
+	$(this).find('.photo-btns').show(100);
+}, function(){
+	$(this).find('.photo-btns').hide(100);
+});
 
 $('#album-select').change(function(){
 	selected = $("#album-select option:selected").text();
@@ -73,20 +84,36 @@ $('#album-select').change(function(){
 	}
 });
 $('.photo-div').click(function(){
-	console.log($(this).attr('data-id'));
-	var that = this;
+	if($(this).attr('data-type') == 'false'){
+		//video
+		src = $(this).attr('data-redirect')
+		var vid = $('<video src="'+src+'" controls></video>');
+		$(vid).attr('id', 'modal-photo');
+		$('#modal-body').html(vid);
+		$('#show-modal').modal('show');
+	}else{
+		src = $(this).attr('data-redirect')
+		var photo = $('<img src="'+src+'"></img>');
+		$(photo).attr('id', 'modal-photo');
+		$('#modal-body').html(photo);
+		$('#show-modal').modal('show');
+	}
+});
+$('.request-btn').click(function(e){
+	e.stopPropagation();
+	var id = $(this).attr('data-id');
 	$.ajax({
-		url:'/request_photo/'+$(this).attr('data-id'),
+		url:'/request_photo/'+id,
 		type:'post',
 		success:function(data){
 			console.log('here');
-			$(that).toggleClass('selected');
+			$('#'+id+'-photo-div').toggleClass('selected');
 		}
 	});
 })
 
 $('video').each(function(){
-	this.playbackRate = 10;
+	this.playbackRate = 5;
 	this.loop = true
 });
 

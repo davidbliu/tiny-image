@@ -10,6 +10,13 @@ class Photo < ActiveRecord::Base
 		Photo.all.pluck(:album).uniq
 	end
 
+	def self.video_albums
+		Photo.where(is_photo: false).pluck(:album).uniq
+	end
+	def self.photo_albums
+		Photo.where(is_photo: true).pluck(:album).uniq
+	end
+
 	def remove_public_file
 		puts 'not implemented yet'
 	end

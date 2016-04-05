@@ -1,25 +1,13 @@
 
 <style type = 'text/css'>
-body{
-	margin-left:20px;
-	margin-right:20px;
-}
-img, video{
-	height:200px;
-}
-.photo-div, .video-div{
-	float:left;
-}
-#email-select{
-	width:300px;
-	margin-bottom:15px;
-}
+
 #requested-row{
 	margin-top:10px;
 }
 .requested-photo{
 	cursor:pointer;
 }
+
 </style>
 
 
@@ -40,26 +28,83 @@ img, video{
 
 
 <% if @requested.length == 0 %>
-<h1>Nothing to show</h1>
+	<h1>Nothing to show</h1>
 <% end %>
 
 
 <div class= 'row' id = 'requested-row'>
 <% @videos.each do |video| %>
-
+<div class = 'photo-div' id = '<%= video.id %>-photo-div' data-redirect = '<%= video.compressed_path %>'>
 	<video class = 'requested-photo' data-id = '<%= video.id %>' src = '<%= video.compressed_path %>' autoplay></video>
-
+	<div class = 'photo-btns'>
+		<div class = 'btn btn-default request-btn' data-id = '<%= video.id %>'>Request</div>
+	</div>
+</div>
 <% end %>
 </div>
 
 <div class = 'row'>
 <% @photos.each do |photo| %>
-<!-- <a href = 'unrequest_photo/<%= photo.id %>'> -->
-<img class = 'requested-photo' data-id = '<%= photo.id %>' src = '<%= photo.compressed_path %>'></img>
+<div class = 'photo-div' id = '<%= photo.id %>-photo-div' data-redirect = '<%= photo.compressed_path %>'>
+	<img class = 'requested-photo' data-id = '<%= photo.id %>' src = '<%= photo.compressed_path %>'></img>
+	<div class = 'photo-btns'>
+		<div class = 'btn btn-default request-btn' data-id = '<%= photo.id %>'>Request</div>
+	</div>
+</div>
 <!-- </a> -->
 <% end %>
 </div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id = 'show-modal'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Get a closer view</h4>
+      </div>
+      <div class="modal-body" id = 'modal-body'>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 <script type = 'text/javascript'>
+$('.photo-div').hover(function(){
+	$(this).find('.photo-btns').show(100);
+}, function(){
+	$(this).find('.photo-btns').hide(100);
+});
+$('.photo-div').click(function(){
+	if($(this).attr('data-type') == 'false'){
+		//video
+		src = $(this).attr('data-redirect')
+		var vid = $('<video src="'+src+'" controls></video>');
+		$(vid).attr('id', 'modal-photo');
+		$('#modal-body').html(vid);
+		$('#show-modal').modal('show');
+	}else{
+		src = $(this).attr('data-redirect')
+		var photo = $('<img src="'+src+'"></img>');
+		$(photo).attr('id', 'modal-photo');
+		$('#modal-body').html(photo);
+		$('#show-modal').modal('show');
+	}
+});
+$('.request-btn').click(function(e){
+	e.stopPropagation();
+	var id = $(this).attr('data-id');
+	$.ajax({
+		url:'/request_photo/'+id,
+		type:'post',
+		success:function(data){
+			console.log('here');
+			$('#'+id+'-photo-div').remove();
+		}
+	});
+})
+
 
 $('#album-select').change(function(){
 	selected = $("#album-select option:selected").text();
@@ -71,18 +116,18 @@ $('#album-select').change(function(){
 	}
 });
 
-$('.requested-photo').click(function(){
-	var that = this;
-	$.ajax({
-		url:'/request_photo/'+$(this).attr('data-id'),
-		type:'post',
-		success:function(data){
-			$(that).remove();
-		}
-	})
-});
+// $('.requested-photo').click(function(){
+// 	var that = this;
+// 	$.ajax({
+// 		url:'/request_photo/'+$(this).attr('data-id'),
+// 		type:'post',
+// 		success:function(data){
+// 			$(that).remove();
+// 		}
+// 	})
+// });
 $('video').each(function(){
-	this.playbackRate = 15;
+	this.playbackRate = 5;
 	this.loop = true
 });
 </script>

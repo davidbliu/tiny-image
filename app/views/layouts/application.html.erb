@@ -9,8 +9,26 @@
   h1, h2, h3, h4, h5, h6, p, body, div, span{
   	font-family: 'Source Sans Pro', sans-serif;
   }
+  body{
+  margin-left:20px;
+  margin-right:20px;
+}
+
+  img, video{
+  height:200px;
+}
+  .btn-default{
+  border:none !important;
+  border-radius:0px !important;
+}
+  .photo-div{
+  display:inline-block;
+  position:relative;
+  cursor:pointer;
+  height:200px;
+}
   #topnav{
-    z-index:5000;
+    z-index:1000;
   }
 #nav-ul{
     float: left;
@@ -23,6 +41,24 @@
     margin-right:10px;
     position:block;
   }
+  .photo-btns{
+  position:absolute;
+  bottom:5px;
+  left:5px;
+  display:none;
+}
+#modal-photo{
+  width:100%;
+}
+#modal-photo{
+  height:auto;
+}
+.modal-content{
+  border-radius:0px !important;
+}
+.modal-header{
+  text-align: center !important;
+}
 
 
 .navbar-default .navbar-nav>li>a {
@@ -30,11 +66,20 @@
   }
 #topnav{
     background-color:rgba(0,10,128, 0.70);
-    border-color: white
+    border:0px;
   }
   </style>
-  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
   <link rel = 'stylesheet' href = 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'>
+  <script src = 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'></script>
+
+  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
+
   <script src = '/lib/underscore-min.js'></script>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>

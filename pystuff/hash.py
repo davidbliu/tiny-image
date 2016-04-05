@@ -7,6 +7,7 @@ import requests
 from PIL import Image
 import imagehash
 import pickle
+import config
 
 video_extensions = ['.mp4', '.MOV', '.MP4', '.mov']
 photo_extensions =  ['.jpg', '.png', '.JPG', '.PNG']
@@ -46,20 +47,22 @@ def get_video_hash(video_path):
 	os.system('ffmpeg -v 0 -ss 0 -i "'+video_path+'" -s 320x240 -frames:v 1 -y output.png')
 	hash = imagehash.phash(Image.open('output.png'))
 	os.system('rm output.png')
-	return hash
+	return str(hash)
 
-get_photo_hash = lambda path: imagehash.phash(Image.open(path))
+get_photo_hash = lambda path: str(imagehash.phash(Image.open(path)))
 
 def compress_photo(path, outdir):
 	hash = get_photo_hash(path)
 	compressed_path = os.path.join(outdir, str(hash)+'.png')
-	os.system('ffmpeg -v 0 -n -i "'+path+'" -vf scale=200:-1 '+compressed_path)
+	os.system('ffmpeg -v 0 -y -i "'+path+'" -vf scale=200:-1 '+compressed_path)
 	return hash
 
 def compress_video(path, outdir):
+	print '\tgetting hash'
 	hash = get_video_hash(path)
+	print '\tcompressing video'
 	compressed_path = os.path.join(outdir, str(hash)+'.webm')
-	os.system('ffmpeg -v 0 -n -i "'+path+'" -vf scale=130:-1 -r 3 -an '+compressed_path)
+	os.system('ffmpeg -v 0 -y -i "'+path+'" -b:v 12k -vf scale=200:-1 -r 10 -ab 3k '+compressed_path)
 	return hash
 
 def compress_directory(root, outdir, skip = True):
@@ -94,10 +97,9 @@ def send_to_server(path, hash, outdir):
 		params = {'email': EMAIL, 'album': album, 'hash': hash})
 	return r
 
-HOSTNAME = 'http://localhost:3000'
-# HOSTNAME = 'http://img.berkeley-pbl.com'
-MAPFILE = 'maps.p'
-EMAIL = 'default'
+HOSTNAME = config.HOSTNAME
+MAPFILE = config.MAPFILE
+EMAIL = config.EMAIL
 
 if __name__=='__main__':
 	ROOT = sys.argv[1]

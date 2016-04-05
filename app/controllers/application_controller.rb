@@ -23,27 +23,26 @@ class ApplicationController < ActionController::Base
 
   def pick_photos
     @album = params[:album]
-    @albums = Photo.albums
+    
     @photos = Photo.order(created_at: :desc)
     if @album and @album != 'all'
       @photos = @photos.where(album: @album)
     end
 
     if params[:video]
-      @photos = @photos.where(is_photo: false).paginate(:page=>params[:page],:per_page=>25)
+      @albums = Photo.video_albums
+      @photos = @photos.where(is_photo: false)
+      @num_files = @photos.length
+      @photos = @photos.paginate(:page=>params[:page],:per_page=>25)
     else
-      @photos = @photos.where(is_photo: true).paginate(:page=>params[:page],:per_page=>100)
+      @albums = Photo.photo_albums
+      @photos = @photos.where(is_photo: true)
+      @num_files = @photos.length
+      @photos = @photos.paginate(:page=>params[:page],:per_page=>100)
     end
     @selected_ids = Photo.selected_ids
     render 'layouts/pick_photos'
   end
-
-  # def pick_videos
-  #   @selected_ids = Photo.selected_ids
-  #   @photos = Photo.all.where(is_photo: false).order('created_at desc')
-  #   .paginate(:page=>params[:page],:per_page=>25)
-  #   render 'layouts/pick_photos'
-  # end
 
   def requested
     @album = params[:album]
@@ -81,18 +80,6 @@ class ApplicationController < ActionController::Base
     render nothing: true, status: 200
   end
 
-
-# def unrequest_photo
-#     PhotoRequest.where(
-#       photo_id: params[:id],
-#       requester: myEmail).destroy_all
-#     redirect_to :back
-#   end
-
-
-  def home
-    render 'layouts/home'
-  end
 
   def empty
     if params[:album]
