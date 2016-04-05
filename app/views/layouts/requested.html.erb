@@ -34,7 +34,7 @@
 
 <div class= 'row' id = 'requested-row'>
 <% @videos.each do |video| %>
-<div class = 'photo-div' id = '<%= video.id %>-photo-div' data-redirect = '<%= video.compressed_path %>'>
+<div class = 'photo-div' id = '<%= video.id %>-photo-div' data-redirect = '<%= video.compressed_path %>' data-type = '<%= video.is_photo %>'>
 	<video class = 'requested-photo' data-id = '<%= video.id %>' src = '<%= video.compressed_path %>' autoplay></video>
 	<div class = 'photo-btns'>
 		<div class = 'btn btn-default request-btn' data-id = '<%= video.id %>'>Request</div>
@@ -45,7 +45,7 @@
 
 <div class = 'row'>
 <% @photos.each do |photo| %>
-<div class = 'photo-div' id = '<%= photo.id %>-photo-div' data-redirect = '<%= photo.compressed_path %>'>
+<div class = 'photo-div' id = '<%= photo.id %>-photo-div' data-redirect = '<%= photo.compressed_path %>' data-type = '<%= photo.is_photo %>'>
 	<img class = 'requested-photo' data-id = '<%= photo.id %>' src = '<%= photo.compressed_path %>'></img>
 	<div class = 'photo-btns'>
 		<div class = 'btn btn-default request-btn' data-id = '<%= photo.id %>'>Request</div>
