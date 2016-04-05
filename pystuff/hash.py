@@ -62,7 +62,7 @@ def compress_video(path, outdir):
 	hash = get_video_hash(path)
 	print '\tcompressing video'
 	compressed_path = os.path.join(outdir, str(hash)+'.webm')
-	os.system('ffmpeg -v 0 -y -i "'+path+'" -b:v 12k -vf scale=200:-1 -r 10 -ab 3k '+compressed_path)
+	os.system('ffmpeg -v 0 -y -i "'+path+'" -b:v 24k -vf scale=200:-1 -r 10 -ab 3k '+compressed_path)
 	return hash
 
 def compress_directory(root, outdir, skip = True):
@@ -81,6 +81,7 @@ def compress_directory(root, outdir, skip = True):
 				h = compress_photo(path, outdir)
 			else:
 				h = compress_video(path, outdir)
+			print '\tsending to server'
 			r = send_to_server(path, h, outdir)
 			print '\tresponse: '+str(r)
 			mappings[path] = str(h)
