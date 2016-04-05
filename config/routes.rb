@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   post '/keepalive' => 'application#keepalive'
   root 'application#pick_photos'
   post 'request_photo/:id' => 'application#request_photo'
-  get 'unrequest_photo/:id' => 'application#unrequest_photo'
+  post 'delete_photo/:id' => 'application#delete_photo'
   get 'fulfill' => 'application#fulfill'
   get 'empty' => 'application#empty'
 

@@ -80,6 +80,12 @@ class ApplicationController < ActionController::Base
     render nothing: true, status: 200
   end
 
+  def delete_photo
+    PhotoRequest.where(photo_id: params[:id]).destroy_all
+    Photo.find(params[:id]).destroy
+    render nothing: true, status: 200
+  end
+
 
   def empty
     if params[:album]

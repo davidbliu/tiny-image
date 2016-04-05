@@ -19,3 +19,8 @@ public/compressed
 public/hashed
 *.pyc
 *.DS_Store
+
+pystuff/upload_these
+pystuff/comp
+pystuff/hash_log
+

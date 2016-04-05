@@ -27,9 +27,12 @@
 <h1 class = 'centered'>No results to show</h1>
 <% end %>
 
-<h3><%= @num_files %> Files</h3>
-
-<%= will_paginate @photos, renderer: BootstrapPagination::Rails %>
+<div id = 'pagination-div' class="digg_pagination">
+    <div class="page_info">
+      <%= page_entries_info @photos %>
+    </div>
+    <%= will_paginate @photos, :container => false %>
+  </div>
 
 <div class = 'row' id = 'photo-container'>
 <% @photos.each do |photo| %>
@@ -44,7 +47,10 @@
 		<video src = '<%= photo.compressed_path %>' autoplay></video>
 	<% end %>
 	<div class = 'photo-btns'>
-		<div class = 'btn btn-default request-btn' data-id = '<%= photo.id %>'>Request</div>
+		<div class = 'btn btn-success request-btn pull-left' data-id = '<%= photo.id %>'>Request</div>
+	</div>
+	<div class = 'photo-top-btns'>
+		<div class = 'btn btn-danger delete-btn pull-right' data-id = '<%= photo.id %>'>X</div>
 	</div>
 </div>
 <% end %>
@@ -65,22 +71,32 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<%= javascript_include_tag 'param_mod' %>
 <script type = 'text/javascript'>
 var albums = <%= raw(@albums) %>;
 
 $('.photo-div').hover(function(){
 	$(this).find('.photo-btns').show(100);
+	$(this).find('.photo-top-btns').show(100);
 }, function(){
 	$(this).find('.photo-btns').hide(100);
+	$(this).find('.photo-top-btns').hide(100);
 });
 
 $('#album-select').change(function(){
 	selected = $("#album-select option:selected").text();
 	if(selected == 'All Albums'){
-		insertParam('album', 'all');
+		// insertParam('album', 'all');
+
+		url = addParameter(window.location.href, 'album', 'all');
+		url = removeURLParameter(url, 'page');
+		window.location = url;
 	}
 	else{
-		insertParam('album', selected);
+		url = addParameter(window.location.href, 'album', selected);
+		url = removeURLParameter(url, 'page');
+		window.location = url;
+		// insertParam('album', selected);
 	}
 });
 $('.photo-div').click(function(){
@@ -98,6 +114,17 @@ $('.photo-div').click(function(){
 		$('#modal-body').html(photo);
 		$('#show-modal').modal('show');
 	}
+});
+$('.delete-btn').click(function(e){
+	e.stopPropagation();
+	var id = $(this).attr('data-id');
+	$.ajax({
+		url:'/delete_photo/'+id,
+		type:'post',
+		success:function(data){
+			$('#'+id+'-photo-div').remove();
+		}
+	})
 });
 $('.request-btn').click(function(e){
 	e.stopPropagation();
