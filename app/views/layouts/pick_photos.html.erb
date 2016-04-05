@@ -66,18 +66,10 @@ var albums = <%= raw(@albums) %>;
 $('#album-select').change(function(){
 	selected = $("#album-select option:selected").text();
 	if(selected == 'All Albums'){
-		<% if @video %>
-			window.location = '/pick?video=true';
-		<% else %>
-			window.location = '/pick';
-		<% end %>
+		insertParam('album', 'all');
 	}
 	else{
-		<% if @video %>
-		window.location = '/pick?video=true&album='+encodeURIComponent(selected);
-		<% else %>
-		window.location = '/pick?album='+encodeURIComponent(selected);
-		<% end %>
+		insertParam('album', selected);
 	}
 });
 $('.photo-div').click(function(){
@@ -94,8 +86,26 @@ $('.photo-div').click(function(){
 })
 
 $('video').each(function(){
-	this.playbackRate = 15;
+	this.playbackRate = 10;
 	this.loop = true
 });
+
+function insertParam(key, value)
+{
+    key = encodeURI(key); value = encodeURI(value);
+    var kvp = document.location.search.substr(1).split('&');
+    var i=kvp.length; var x; while(i--) 
+    {
+        x = kvp[i].split('=');
+        if (x[0]==key)
+        {
+            x[1] = value;
+            kvp[i] = x.join('=');
+            break;
+        }
+    }
+    if(i<0) {kvp[kvp.length] = [key,value].join('=');}
+    document.location.search = kvp.join('&'); 
+}
 
 </script>

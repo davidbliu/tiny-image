@@ -20,49 +20,30 @@ class ApplicationController < ActionController::Base
     FileUtils.cp tmp.path, file
     render nothing: true, status: 200
   end
-  def upload_compressed
-  	require 'fileutils'
-  	tmp = params[:file].tempfile
-  	file = File.join("public", "compressed/"+params[:file].original_filename)
-    compressed_path = '/compressed/'+params[:file].original_filename
-    p = Photo.where(
-      compressed_path: compressed_path,
-      original_path: params[:original_path]).first_or_create!
-    p.is_photo = compressed_path.include?('.png')
-    p.email = params[:email]
-    p.album = params[:album]
-    p.keepalive = Time.now
-    p.save!
-  	FileUtils.cp tmp.path, file
-  	render nothing: true, status: 200
-  end
-
-  def keepalive
-    Photo.where(original_path: params[:original_path]).each do |photo|
-      photo.keepalive = Time.now
-      photo.save!
-    end
-    render nothing: true, status: 200
-  end
 
   def pick_photos
     @album = params[:album]
     @albums = Photo.albums
-    @photos = Photo.order(is_photo: :asc, created_at: :desc)
-    if @album
+    @photos = Photo.order(created_at: :desc)
+    if @album and @album != 'all'
       @photos = @photos.where(album: @album)
     end
-    @photos = @photos.paginate(:page=>params[:page],:per_page=>100)
+
+    if params[:video]
+      @photos = @photos.where(is_photo: false).paginate(:page=>params[:page],:per_page=>25)
+    else
+      @photos = @photos.where(is_photo: true).paginate(:page=>params[:page],:per_page=>100)
+    end
     @selected_ids = Photo.selected_ids
     render 'layouts/pick_photos'
   end
 
-  def pick_videos
-    @selected_ids = Photo.selected_ids
-    @photos = Photo.all.where(is_photo: false).order('created_at desc')
-    .paginate(:page=>params[:page],:per_page=>25)
-    render 'layouts/pick_photos'
-  end
+  # def pick_videos
+  #   @selected_ids = Photo.selected_ids
+  #   @photos = Photo.all.where(is_photo: false).order('created_at desc')
+  #   .paginate(:page=>params[:page],:per_page=>25)
+  #   render 'layouts/pick_photos'
+  # end
 
   def requested
     @album = params[:album]
@@ -101,12 +82,12 @@ class ApplicationController < ActionController::Base
   end
 
 
-def unrequest_photo
-    PhotoRequest.where(
-      photo_id: params[:id],
-      requester: myEmail).destroy_all
-    redirect_to :back
-  end
+# def unrequest_photo
+#     PhotoRequest.where(
+#       photo_id: params[:id],
+#       requester: myEmail).destroy_all
+#     redirect_to :back
+#   end
 
 
   def home
