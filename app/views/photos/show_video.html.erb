@@ -1,0 +1,16 @@
+<div>
+	<a href = '<%= @photo.compressed_path %>'><%= @photo.compressed_path %>
+	</a>
+</div>
+<video id = 'modal-photo' src = '<%= @photo.compressed_path %>' controls></video>
+
+<div class = 'modal-meta'>
+	<div>
+		<a href = '<%= @photo.compressed_path %>'><%= @photo.compressed_path %>
+		</a>
+	</div>
+	<div>Original Filesize: <%= @photo.original_size %>MB</div>
+	<div>Compressed Filesize: <%= @photo.compressed_size %>KB</div>
+	<div>Last Updated: <%= @photo.updated_at %></div>
+	<div>Created At: <%= @photo.created_at %></div>
+</div>

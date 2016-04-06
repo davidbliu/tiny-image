@@ -2,6 +2,18 @@
 
 Tiny pic is an efficient way to share photos. It enables uploaders to share entire photo libraries quickly by uploading super-compressed versions of photos/videos and allowing collaborators to request specific files to be uploaded in full. This reduces the amount of gigabytes sent of slow internet connections.
 
+## tricks for running
+
+disable sleep, and compute compressed versions first: http://osxdaily.com/2015/02/03/set-or-disable-sleep-due-to-mac-system-inactivity-from-the-command-line-in-os-x/
+
+sudo systemsetup -setcomputersleep Never
+sudo systemsetup -getcomputersleep
+upload after compressed have all been computed
+
+
+[ffmpeg for windows](https://ffmpeg.zeranoe.com/builds/)
+
+
 ## components
 
 * uploaders use python scripts (requires ffmpeg) to compress and upload footage
@@ -55,3 +67,28 @@ __long way__
 
 uses the ImageHash library. for videos, perceptual hash is the phash of the videos first frame
 
+### TODO
+
+* check for bad mp4 and recompress if found
+* submit original filesize and compressed filesize to website
+* website: cut videos and requests slices (dont introduce UI for this before the pyscripts are made)
+* want to leave computer on and let script run
+
+__options for pyscripts__
+* delete compressed footage, recompress + upload entire folder
+* continue compressing folder
+* upload compressed files
+* compress + upload files
+
+__what should log store__
+
+* i compressed a file
+* i computed a hash
+* i uploaded a file
+
+* if no upload after latest compress: reupload
+* if no compress after hash: compress + upload
+* if no hash: hash + compress + upload
+
+
+test if a file is broke: 7f8405b9c565d469.mp4

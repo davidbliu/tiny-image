@@ -81,3 +81,15 @@
   border:1px solid rgba(100,100,100,0.1);
   width:75px;
 }
+
+.selected{
+  outline:5px solid green; 
+  opacity:0.5;
+  z-index:300;
+}
+#photo-container{
+  margin-top:10px;
+}
+#modal-footer{
+  display:none;
+}

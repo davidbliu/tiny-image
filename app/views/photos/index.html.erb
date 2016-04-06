@@ -1,0 +1,65 @@
+
+<% if @albums.length > 0 %>
+<select id = 'album-select' class = 'form-control'>
+	<option>All Albums</option>
+	<% @albums.each do |album| %>
+		<% if @album and @album == album %>
+			<option selected><%= album %></option>
+		<% else %>
+			<option><%= album %></option>
+		<% end %>
+	<% end %>
+</select>
+<% end %>
+
+<% if @photos.length == 0 %>
+<h1 class = 'centered'>No results to show</h1>
+<% end %>
+
+<div id = 'pagination-div' class="digg_pagination">
+    <div class="page_info">
+      <%= page_entries_info @photos %>
+    </div>
+    <%= will_paginate @photos, :container => false %>
+  </div>
+
+<div class = 'row' id = 'photo-container'>
+<% @photos.each do |photo| %>
+<% if @selected_ids.include?(photo.id) %>
+<div class = 'photo-div selected' id = '<%= photo.id %>-photo-div' data-redirect = '<%= photo.compressed_path %>' data-type = '<%= photo.is_photo %>' data-id = '<%= photo.id %>'>
+<% else %>
+<div class = 'photo-div' id = '<%= photo.id %>-photo-div' data-redirect = '<%= photo.compressed_path %>' data-type = '<%= photo.is_photo %>' data-id = '<%= photo.id %>'>
+<% end %>
+	<% if photo.is_photo %>
+		<img class = 'photo-img' src = '<%= photo.compressed_path %>'></img>
+	<% else %>
+		<video src = '<%= photo.compressed_path %>' autoplay></video>
+	<% end %>
+	<div class = 'photo-btns'>
+		<div class = 'btn btn-success request-btn pull-left' data-id = '<%= photo.id %>'>Request</div>
+	</div>
+	<div class = 'photo-top-btns'>
+		<div class = 'btn btn-danger delete-btn pull-right' data-id = '<%= photo.id %>'>X</div>
+	</div>
+</div>
+<% end %>
+</div>
+</div>
+
+
+<%= render 'layouts/show_modal' %>
+
+<script type = 'text/javascript'>
+	var albums = <%= raw(@albums) %>;
+</script>
+
+<%= javascript_include_tag 'param_mod' %>
+<%= javascript_include_tag 'show_modal' %>
+<%= javascript_include_tag 'album_select' %>
+
+<script type = 'text/javascript'>
+$('video').each(function(){
+	this.playbackRate = 15;
+	this.loop = true
+});
+</script>

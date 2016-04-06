@@ -19,6 +19,7 @@ class Photo < ActiveRecord::Base
 
 	def remove_public_file
 		puts 'not implemented yet'
+		File.delete(self.compressed_path) if File.exist?(self.compressed_path)
 	end
 
 	def self.requested

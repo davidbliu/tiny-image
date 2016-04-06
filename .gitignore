@@ -26,3 +26,4 @@ pystuff/hash_log
 pystuff/*.webm
 pystuff/*.mp4
 *nohup.out
+*.log

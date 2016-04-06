@@ -1,21 +1,15 @@
 Rails.application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
-  post 'upload_photo' => 'application#upload_photo'
-  post '/upload_compressed' => 'application#upload_compressed'
-  post '/keepalive' => 'application#keepalive'
-  root 'application#pick_photos'
-  post 'request_photo/:id' => 'application#request_photo'
-  post 'delete_photo/:id' => 'application#delete_photo'
-  get 'cut_video' => 'application#cut_video'
-  get 'fulfill' => 'application#fulfill'
-  get 'empty' => 'application#empty'
+  root 'photos#index'
+  post 'upload_photo' => 'photos#upload_photo'
+  post 'delete_photo/:id' => 'photos#delete_photo'
+  get 'photos/show/:id' => 'photos#show'
+  get 'empty' => 'photos#empty' # delete all photos
 
-  get 'pick' => 'application#pick_photos'
-  # get 'pick_videos' => 'application#pick_videos'
-  get 'requested' => 'application#requested'
-  get 'requested_paths' => 'application#requested_paths'
-
+  # requests
+  post 'request_photo/:id' => 'requests#request_photo'
+  get 'requested' => 'requests#index'
   get 'table' => 'requests#table'
   get 'hashes' => 'requests#hashes'
   # You can have the root of your site routed with "root"

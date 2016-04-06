@@ -1,9 +1,0 @@
-<h1>Run this code to fulfill your requests</h1>
-
-<div>
-	<div>mkdir upload_these</div>
-	<% @requested.each do |photo| %>
-	<div>cp <%= photo.original_path %> upload_these</div>
-	<% end %>
-	<div>echo 'done'</div>
-</div>
