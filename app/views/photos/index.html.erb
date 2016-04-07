@@ -1,27 +1,40 @@
 
-<% if @albums.length > 0 %>
+
+
+
 <select id = 'album-select' class = 'form-control'>
-	<option>All Albums</option>
-	<% @albums.each do |album| %>
-		<% if @album and @album == album %>
-			<option selected><%= album %></option>
-		<% else %>
-			<option><%= album %></option>
+		<option>All Albums</option>
+		<% @albums.each do |album| %>
+			<% if @album and @album == album %>
+				<option selected><%= album %></option>
+			<% else %>
+				<option><%= album %></option>
+			<% end %>
 		<% end %>
+	</select>
+  
+
+<div id = 'pagination-div' class="digg_pagination">
+	
+    <div class="page_info">
+      <%= page_entries_info @photos %>
+    </div>
+    <%= will_paginate @photos, :container => false %>
+    <% if @albums.length > 0 %>
+	
 	<% end %>
-</select>
-<% end %>
+</div>
+
+
 
 <% if @photos.length == 0 %>
 <h1 class = 'centered'>No results to show</h1>
 <% end %>
 
-<div id = 'pagination-div' class="digg_pagination">
-    <div class="page_info">
-      <%= page_entries_info @photos %>
-    </div>
-    <%= will_paginate @photos, :container => false %>
-  </div>
+<% if @album  and @photos.length > 0 %>
+<h1 class = 'centered'><%= @album %></h1>
+<% end %>
+
 
 <div class = 'row' id = 'photo-container'>
 <% @photos.each do |photo| %>

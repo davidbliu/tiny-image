@@ -19,20 +19,16 @@ is_video_path = lambda x: x[-4:] in video_extensions
 is_photo_or_video_path = lambda x: is_video_path(x) or is_photo_path(x)
 is_comp_path = lambda x: '/'+config.COMP in x
 
-	# pass
 def needs_compressing(compressed_path): 
 	if not isfile(compressed_path):
 		return True
 	if ffmpeg_helpers.is_corrupted(compressed_path):
 		return True
+	size = ffmpeg_helpers.get_filesize_kb(compressed_path)
+	print 'size: '+str(size)
+	if  size >= 2000:
+		return True
 	return False
-	# if is_photo_path(path):
-	# 	cpath = hash+config.PHOTO_SUFFIX
-	# else:
-	# 	cpath = hash+config.VIDEO_SUFFIX
-	# if cpath in os.listdir(outdir):
-	# 	return False
-	# return True
 
 def write_hash_log(path, hash):
 	with open(config.HASHLOG, 'a') as hashlog:
@@ -79,21 +75,16 @@ def compress_video(path, compressed_path):
 	print '\tcopying temp.mp4 to '+compressed_path
 	os.system('cp temp.mp4 '+compressed_path)
 	print '\tfinal size: '+str(os.path.getsize(compressed_path)/1000)+' KB'
-	# os.system('ffmpeg -v -0 -y -i "'+path+'" -r 3 scale="trunc(ow/a/2)*2:200" -an '+compressed_path)
-	# if osize_mb > 500:
-	# 	# os.system('ffmpeg -v 0 -y -i "'+path+'" -preset medium -b:v 50k -r 24 -vf scale="200:trunc(ow/a/2)*2" -b:a 2k '+compressed_path)
-	# else:
-	# 	# os.system('ffmpeg -v 0 -y -i "'+path+'" -preset fast -b:v 75k -r 24 -vf scale="200:trunc(ow/a/2)*2" -b:a 3k '+compressed_path)
-	# 	os.system('ffmpeg -v 0 -y -i "'+path+'"  -r 10 -b:v 100k -vf scale="-1:200" -b:a 3k '+temp_path)
 
 def get_photo_and_video_paths(root):
 	original_paths = []
 	for path, subdirs, files in os.walk(root):
-			for name in files:
-				original_path = os.path.join(path, name)
-				if is_photo_or_video_path(original_path) and not is_comp_path(original_path):
-					original_paths.append(original_path)
+		for name in files:
+			original_path = os.path.join(path, name)
+			if is_photo_or_video_path(original_path) and not is_comp_path(original_path):
+				original_paths.append(original_path)
 	return original_paths
+
 def compress_directory(root):
 	mappings = load_mappings()
 	original_paths = get_photo_and_video_paths(root)

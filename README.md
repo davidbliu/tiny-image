@@ -69,10 +69,13 @@ uses the ImageHash library. for videos, perceptual hash is the phash of the vide
 
 ### TODO
 
-* check for bad mp4 and recompress if found
-* submit original filesize and compressed filesize to website
-* website: cut videos and requests slices (dont introduce UI for this before the pyscripts are made)
+* [x] check for bad mp4 and recompress if found
+* [x] submit original filesize and compressed filesize to website
 * want to leave computer on and let script run
+	* interrupted process: restart and keep compressing
+	* compression and uploading should be separate with option to do both in one go
+* DELAY: website: cut videos and requests slices (dont introduce UI for this before the pyscripts are made)
+
 
 __options for pyscripts__
 * delete compressed footage, recompress + upload entire folder
@@ -92,3 +95,6 @@ __what should log store__
 
 
 test if a file is broke: 7f8405b9c565d469.mp4
+
+/Volumes/passport/5.30.15/2015-06-20/HERO4 Silver/GOPR0484.MP4
+* this file was too big to be compressed properly: to size down to a reasonable filesize required 9kb bitrate

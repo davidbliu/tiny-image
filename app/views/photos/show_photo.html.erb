@@ -11,4 +11,8 @@
 	<div>Compressed Filesize: <%= @photo.compressed_size %>KB</div>
 	<div>Last Updated: <%= @photo.updated_at %></div>
 	<div>Created At: <%= @photo.created_at %></div>
+	<div>
+		Album: <a href = '/?album=<%= @photo.album %>'><%= @photo.album %></a>
+	</div>
+	
 </div>

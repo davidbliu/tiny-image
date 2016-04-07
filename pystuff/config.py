@@ -1,5 +1,5 @@
-HOSTNAME = 'http://localhost:3000'
-# HOSTNAME = 'http://img.berkeley-pbl.com'
+# HOSTNAME = 'http://localhost:3000'
+HOSTNAME = 'http://img.berkeley-pbl.com'
 # MAPFILE = 'maps.p'
 EMAIL = 'default'
 UPLOAD = 'upload_these'

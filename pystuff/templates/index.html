@@ -1,0 +1,23 @@
+
+<head>
+	<title>Tiny Uploader</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+	<script src = '/static/js/main.js'></script>
+</head>
+<body>
+
+	<div class = 'pure-u-1-2'>
+		<input type = 'text' placeholder = 'search directories'></input>
+		<select>
+		{% for dir in directories %}
+		<option>{{ dir }}</option>
+		{% endfor %}
+		</select>
+	</div>
+	<div class = 'pure-u-1-2'>
+		<div class = 'pure-button' id = 'run-compressor-btn'>Run compressor</div>
+		<div class = 'pure-button' id = 'hash-log-btn'>Hash log</div>
+	</div>
+
+</body>

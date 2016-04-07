@@ -31,16 +31,6 @@ function activatePhotoBtns(){
 		});
 	});
 }
-// function showModalVideo(id){
-// 	$.ajax({
-// 		url:'/photos/get/'+id,
-// 		type:'get',
-// 		success:function(photo){
-// 			console.log(photo);
-// 		}
-// 	});
-// }
-
 function showModalPhoto(photo){
 	if(photo.is_photo){
 		var img = $('<img id = "modal-photo" src = "'+photo.compressed_path+'"></img>');

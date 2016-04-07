@@ -28,7 +28,7 @@ class PhotosController < ApplicationController
 		  @albums = Photo.video_albums
 		  @photos = @photos.where(is_photo: false)
 		  @num_files = @photos.length
-		  @photos = @photos.paginate(:page=>params[:page],:per_page=>9)
+		  @photos = @photos.paginate(:page=>params[:page],:per_page=>21)
 		else
 		  @albums = Photo.photo_albums
 		  @photos = @photos.where(is_photo: true)

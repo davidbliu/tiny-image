@@ -25,4 +25,19 @@ if __name__ =='__main__':
 	# for i in range(len(paths)):
 	# 	print str(i)+' of '+str(len(paths))
 	# 	s = hasher.is_corrupted(os.path.join('comp', paths[i]))
-	hasher.compress_video('input.mp4', 'some_random_hash', '.')
+	# hasher.compress_video('input.mp4', 'some_random_hash', '.')
+	import re
+	original_paths = []
+	excludes = '/Volumes/passport/Backups.backupdb' #, '/Volumes/passport/linkedin_backups/']
+	for root, dirs, files in os.walk('/Volumes/passport'):
+		# exclude dirs
+		dirs[:] = [os.path.join(root, d) for d in dirs]
+		dirs[:] = [d for d in dirs if not re.match(excludes, d)]
+		for file in files:
+			original_path =  os.path.join(root, file)
+			# subdirs[:] = [d for d in subdirs if '/Volumes/passport/Backups.backupdb/' not in d]
+			# for name in files:
+			# original_path = os.path.join(path, name)
+			if hasher.is_photo_or_video_path(original_path) and not hasher.is_comp_path(original_path):
+				original_paths.append(original_path)
+				print original_path

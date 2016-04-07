@@ -19,7 +19,7 @@ def get_requested_hashes():
 if __name__ == '__main__':
 	map = hasher.load_mappings()
 	if not map.keys():
-		print 'no hash_log'
+		print 'no hash_log! did you remove hash.log?'
 	else:
 		map = {v: k for k, v in map.items()}
 		print 'pulling hashes from '+config.HOSTNAME
