@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   post 'delete_photo/:id' => 'photos#delete_photo'
   get 'photos/show/:id' => 'photos#show'
   get 'empty' => 'photos#empty' # delete all photos
+  get 'photos/hashes' => 'photos#hashes'
 
   # requests
   post 'request_photo/:id' => 'requests#request_photo'

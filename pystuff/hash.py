@@ -19,15 +19,22 @@ is_video_path = lambda x: x[-4:] in video_extensions
 is_photo_or_video_path = lambda x: is_video_path(x) or is_photo_path(x)
 is_comp_path = lambda x: '/'+config.COMP in x
 
-def needs_compressing(compressed_path): 
+def needs_compressing(path, compressed_path): 
 	if not isfile(compressed_path):
 		return True
-	if ffmpeg_helpers.is_corrupted(compressed_path):
-		return True
-	size = ffmpeg_helpers.get_filesize_kb(compressed_path)
-	print 'size: '+str(size)
-	if  size >= 2000:
-		return True
+	if is_video_path(path):
+		if ffmpeg_helpers.is_corrupted(compressed_path):
+			return True
+		size = ffmpeg_helpers.get_filesize_kb(compressed_path)
+		print '\tcompressed_size: '+str(size)
+		if  size >= 2000:
+			return True
+		original_duration = ffmpeg_helpers.get_video_length(path)
+		compressed_duration = ffmpeg_helpers.get_video_length(path)
+		print '\tdurations (orig, comp): '+str([original_duration, compressed_duration])
+		frac = abs(compressed_duration-original_duration)/original_duration
+		if frac > 0.1:
+			return True
 	return False
 
 def write_hash_log(path, hash):
@@ -90,8 +97,14 @@ def compress_directory(root):
 	original_paths = get_photo_and_video_paths(root)
 	print 'found '+str(len(original_paths))+' files to compress'
 	sys.stdout.flush()
+	sent_hashes = get_sent_hashes()
+	print sent_hashes
 	for i in range(len(original_paths)):
 		path = original_paths[i]
+		if SKIP_VID and is_video_path(path) or path.split('/')[-1][0]=='.':
+			i = i+1
+			continue
+		print 'file '+str(i+1)+' of '+str(len(original_paths))+ ' | '+path
 		if path not in mappings.keys():
 			hash = get_hash(path)
 			write_hash_log(path, hash)
@@ -99,20 +112,25 @@ def compress_directory(root):
 			hash = mappings[path]
 		suffix = config.PHOTO_SUFFIX if is_photo_path(path) else config.VIDEO_SUFFIX
 		compressed_path = os.path.join(config.COMP, hash + suffix)
-		if needs_compressing(compressed_path) or not SKIP:
-			print 'compressing '+str(i+1)+' of '+str(len(original_paths))+ ' | '+path
+		if needs_compressing(path, compressed_path) or not SKIP:
+			print '\tcompressing...'
 			if is_photo_path(path):
 				compress_photo(path, compressed_path)
 			else:
 				compress_video(path, compressed_path)
 		else:
-			print 'skip compression | '+str(i)+' of '+str(len(original_paths))+ ' | '+path
+			print '\tskipped compression'
 
-		if SEND:
-			print '\tsending to server'
+		if hash in sent_hashes:
+			print '\t'+hash+' is already sent'
+		if SEND and (hash not in sent_hashes or RESEND):
+			print '\tsending to server...'
 			r = send_to_server(path, compressed_path)
 			print '\tresponse: '+str(r)
 			sys.stdout.flush()
+
+def get_sent_hashes():
+	return requests.get(config.HOSTNAME +'/photos/hashes').json()
 
 def send_to_server(path, compressed_path):
 	hash = compressed_path.split('/')[-1].split('.')[0]
@@ -132,10 +150,14 @@ HOSTNAME = config.HOSTNAME
 EMAIL = config.EMAIL
 SEND = False
 SKIP = False
+SKIP_VID = False
+RESEND = False
 if __name__=='__main__':
 	email = config.EMAIL
 	SKIP = 'skip' in sys.argv
 	SEND = 'send' in sys.argv
+	SKIP_VID = 'skip_vid' in sys.argv
+	RESENT = 'resent' in sys.argv
 	print 'skip: '+str(SKIP)
 	print 'send to '+HOSTNAME+': '+str(SEND)
 

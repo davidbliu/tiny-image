@@ -38,6 +38,10 @@ class PhotosController < ApplicationController
 		@selected_ids = Photo.selected_ids
 	end
 
+	def hashes
+		render json: Photo.all.pluck(:phash).uniq
+	end
+
 	def show
 		@photo = Photo.find(params[:id])
 		if @photo.is_photo

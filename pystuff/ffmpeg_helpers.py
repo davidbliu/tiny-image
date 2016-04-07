@@ -13,9 +13,9 @@ def get_video_length(path):
     stdout, stderr = process.communicate()
     matches = re.search(r"Duration:\s{1}(?P<hours>\d+?):(?P<minutes>\d+?):(?P<seconds>\d+\.\d+?),", stdout, re.DOTALL).groupdict()
      
-    hours = Decimal(matches['hours'])
-    minutes = Decimal(matches['minutes'])
-    seconds = Decimal(matches['seconds'])
+    hours = float(matches['hours'])
+    minutes = float(matches['minutes'])
+    seconds = float(matches['seconds'])
  
     total = 0
     total += 60 * 60 * hours
