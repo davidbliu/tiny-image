@@ -98,7 +98,6 @@ def compress_directory(root):
 	print 'found '+str(len(original_paths))+' files to compress'
 	sys.stdout.flush()
 	sent_hashes = get_sent_hashes()
-	print sent_hashes
 	for i in range(len(original_paths)):
 		path = original_paths[i]
 		if SKIP_VID and is_video_path(path) or path.split('/')[-1][0]=='.':
